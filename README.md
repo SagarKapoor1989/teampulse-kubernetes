@@ -93,6 +93,19 @@ kubectl rollout status deployment/web deployment/tasks deployment/insights deplo
 kubectl get pods,services,pvc,hpa -n teampulse
 ```
 
+Docker Desktop's local `kind` cluster does not include Metrics Server by default. Install the official add-on and allow its self-signed local kubelet certificate with:
+
+```sh
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.9.0/components.yaml
+kubectl patch deployment metrics-server -n kube-system --type=json \
+  -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+kubectl rollout status deployment/metrics-server -n kube-system --timeout=180s
+kubectl top pods -n teampulse
+kubectl get hpa -n teampulse
+```
+
+The insecure kubelet-certificate option is appropriate only for this local development cluster. A production cluster should use properly signed kubelet serving certificates.
+
 For a local cluster, the most portable browser access is:
 
 ```sh
@@ -119,6 +132,21 @@ kubectl get pods,pvc -n teampulse -w
 ```
 
 The task remains because Redis writes append-only data to the PVC instead of the container filesystem.
+
+## Verified local Kubernetes deployment
+
+The release was verified on 30 October 2026 using Docker Desktop's one-node `kind` cluster running Kubernetes 1.36.1:
+
+- all 21 application resources applied successfully;
+- two Web, two Task, two Insights, and one Redis pod became ready;
+- all three custom images were pulled from `sagaraug04` on Docker Hub;
+- the public REST gateway created and returned a task;
+- Insights obtained the task through the Task REST API and generated metrics;
+- only Insights was scaled from two to four replicas while Web and Tasks stayed at two;
+- Redis was deleted and replaced with a differently named pod;
+- the previously created task remained after replacement because the 1 GiB PVC was retained;
+- Metrics Server supplied live CPU data to all three HPAs;
+- application and Redis recovery logs were available through `kubectl logs`.
 
 ## Submission links
 
