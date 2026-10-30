@@ -1,0 +1,13 @@
+{
+  "name": "teampulse-tasks",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Task CRUD REST microservice for TeamPulse",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

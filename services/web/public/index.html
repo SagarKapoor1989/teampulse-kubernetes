@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="TeamPulse microservice task dashboard">
+    <title>TeamPulse — ship work with clarity</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="shell topbar">
+      <a class="brand" href="/" aria-label="TeamPulse home">
+        <span class="brand-mark" aria-hidden="true">TP</span>
+        <span>TeamPulse</span>
+      </a>
+      <div class="system-state"><span class="pulse"></span> Kubernetes workspace</div>
+    </header>
+
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Team operations</p>
+          <h1>Make progress<br><em>visible.</em></h1>
+          <p class="hero-copy">A deliberately small, cloud-native task board built to demonstrate independent services, resilient APIs, and persistent data.</p>
+        </div>
+        <button class="primary-button" id="open-form" type="button">+ Add a task</button>
+      </section>
+
+      <section class="metrics" aria-label="Project metrics">
+        <article><span>All tasks</span><strong id="metric-total">—</strong></article>
+        <article><span>In motion</span><strong id="metric-active">—</strong></article>
+        <article><span>Completed</span><strong id="metric-complete">—</strong></article>
+        <article class="progress-card">
+          <span>Completion</span><strong id="metric-percent">—%</strong>
+          <div class="progress-track"><div id="progress-bar"></div></div>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <div class="section-heading">
+          <div><p class="eyebrow">Live board</p><h2>Current work</h2></div>
+          <button class="text-button" id="refresh" type="button">Refresh data</button>
+        </div>
+        <div id="notice" class="notice" role="status" aria-live="polite"></div>
+        <div class="board" id="board" aria-live="polite">
+          <section class="column" data-status="todo">
+            <header><h3>To do</h3><span id="count-todo">0</span></header>
+            <div class="cards" id="tasks-todo"></div>
+          </section>
+          <section class="column" data-status="doing">
+            <header><h3>In progress</h3><span id="count-doing">0</span></header>
+            <div class="cards" id="tasks-doing"></div>
+          </section>
+          <section class="column" data-status="done">
+            <header><h3>Done</h3><span id="count-done">0</span></header>
+            <div class="cards" id="tasks-done"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="task-dialog">
+      <form id="task-form">
+        <div class="dialog-heading"><div><p class="eyebrow">New work item</p><h2>Add a task</h2></div><button class="close-button" id="close-form" type="button" aria-label="Close">×</button></div>
+        <label>Task title<input name="title" maxlength="120" required placeholder="Prepare Kubernetes demo"></label>
+        <label>Owner<input name="owner" maxlength="60" placeholder="Asha"></label>
+        <label>Description<textarea name="description" maxlength="1000" rows="4" placeholder="What does done look like?"></textarea></label>
+        <label>Status<select name="status"><option value="todo">To do</option><option value="doing">In progress</option><option value="done">Done</option></select></label>
+        <button class="primary-button full" type="submit">Create task</button>
+      </form>
+    </dialog>
+
+    <template id="task-template">
+      <article class="task-card">
+        <div class="card-top"><span class="task-id"></span><button class="delete-button" type="button" aria-label="Delete task">×</button></div>
+        <h4></h4><p class="description"></p>
+        <div class="card-footer"><span class="owner"></span><select class="status-select" aria-label="Change status"><option value="todo">To do</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
+      </article>
+    </template>
+
+    <footer class="shell"><span>TeamPulse / cloud architecture assignment</span><span id="updated-at">Waiting for data</span></footer>
+  </body>
+</html>

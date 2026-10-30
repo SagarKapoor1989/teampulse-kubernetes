@@ -1,0 +1,62 @@
+services:
+  web:
+    build: ./services/web
+    image: ${DOCKERHUB_USERNAME:-local}/teampulse-web:1.0.0
+    ports:
+      - "8080:3000"
+    environment:
+      TASK_API_URL: http://tasks:3001
+      INSIGHTS_API_URL: http://insights:3002
+    depends_on:
+      tasks:
+        condition: service_healthy
+      insights:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  tasks:
+    build: ./services/tasks
+    image: ${DOCKERHUB_USERNAME:-local}/teampulse-tasks:1.0.0
+    environment:
+      REDIS_HOST: redis
+      REDIS_PASSWORD: local-demo-password
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3001/readyz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  insights:
+    build: ./services/insights
+    image: ${DOCKERHUB_USERNAME:-local}/teampulse-insights:1.0.0
+    environment:
+      TASK_API_URL: http://tasks:3001
+    depends_on:
+      tasks:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3002/readyz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "local-demo-password"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "local-demo-password", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  redis-data:
