@@ -10,7 +10,7 @@ Show the browser board. Point out task workflow columns and summary metrics.
 
 ## 0:45–1:50 — Explain the architecture
 
-Show the architecture diagram in `README.md` or `docs/ARCHITECTURE.md`.
+Show the architecture diagram in `README.md`.
 
 “The browser reaches only the Web service. Web is a Backend for Frontend and routes REST calls to Task or Insights. Task owns validation and all Redis access. Insights demonstrates programmatic API consumption: it calls Task over HTTP, then calculates the summary. Redis is the separate database and its `/data` directory is mounted from a persistent volume.”
 
