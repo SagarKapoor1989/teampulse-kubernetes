@@ -23,8 +23,6 @@ flowchart LR
 | Insights API | Calls the Task API and computes live metrics | `Deployment/insights` + ClusterIP `Service/insights` | HPA: 2–10 |
 | Redis | Stores tasks using append-only persistence | `Deployment/redis` + ClusterIP `Service/redis` + PVC | One replica |
 
-A timed presentation guide is in [Demo script](docs/DEMO_SCRIPT.md), and likely viva questions are in [Question preparation](docs/QUESTIONS.md).
-
 ## REST APIs
 
 All custom services expose REST endpoints:
@@ -164,7 +162,6 @@ teampulse-kubernetes/
 │   └── insights/    # Analytics API and REST client
 ├── kubernetes/      # Deployments, Services, HPA, Secret, PVC, policies
 ├── scripts/         # Image configuration and API smoke test
-├── docs/            # Presentation and question preparation
 ├── compose.yaml     # Convenient local integration environment
 └── Makefile         # Repeatable test/build/push/deploy commands
 ```
